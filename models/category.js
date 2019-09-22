@@ -12,4 +12,4 @@ const categoryShema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("category", categoryShema);
+module.exports = mongoose.model("Category", categoryShema);
