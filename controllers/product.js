@@ -6,7 +6,7 @@ const Product = require("../models/product");
 
 exports.productById = (req, res, next, id) => {
   Product.findById(id)
-    // .populate("category")
+    .populate("category") // do not work
     .exec((err, product) => {
       if (err || !product) {
         return res.status(400).json({
