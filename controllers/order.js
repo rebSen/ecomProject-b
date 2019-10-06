@@ -15,7 +15,8 @@ exports.create = (req, res) => {
 
 exports.listOrders = (req, res) => {
   Order.find()
-    .populate("user", "_id, name, address")
+    // .populate("User", "_id name address") // U maj sinon ne fonctonne pas O.O ET COMMENT2 NECREE PAS DERREUR !!
+    .populate("User", "_id name address")
     .sort("-created")
     .exec((err, orders) => {
       if (err) {
@@ -23,6 +24,7 @@ exports.listOrders = (req, res) => {
           error: errorHandler(error)
         });
       }
+      console.log(orders);
       res.json(orders);
     });
 };
