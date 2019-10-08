@@ -1,4 +1,7 @@
 const User = require("../models/user");
+const { Order } = require("../models/order");
+const _ = require("lodash");
+const { errorHandler } = require("../helpers/dbErrorHandler");
 
 exports.userById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
@@ -36,28 +39,44 @@ exports.read = (req, res) => {
 //     }
 //   );
 // };
-
-exports.update = (req, res) => {
-  User.findOneAndUpdate(
-    // { useFindAndModify: false },
-
-    { _id: req.profile._id },
-    { $set: req.body },
-    { new: true },
-
-    (err, user) => {
-      if (err) {
-        return res.status(400).json({
-          error: "You are not authorized to perform this action"
-        });
-      }
-      user.hashed_password = undefined;
-      user.salt = undefined;
-      console.log("theIS", req.profile._id);
-      res.json(user);
+exports.update = (req, res, next) => {
+  let user = req.profile;
+  user = _.extend(user, req.body); // extend - mutate the source object
+  user.updated = Date.now();
+  user.save(err => {
+    if (err) {
+      return res.status(400).json({
+        error: "You are not authorized to perform this action"
+      });
     }
-  );
+    user.hashed_password = undefined;
+    user.salt = undefined;
+    res.json({ user });
+  });
 };
+
+// METHODES DU COURS
+// exports.update = (req, res) => {
+//   User.findOneAndUpdate(
+//     // { useFindAndModify: false },
+
+//     { _id: req.profile._id },
+//     { $set: req.body },
+//     { new: true },
+
+//     (err, user) => {
+//       if (err) {
+//         return res.status(400).json({
+//           error: "You are not authorized to perform this action"
+//         });
+//       }
+//       user.hashed_password = undefined;
+//       user.salt = undefined;
+
+//       res.json(user);
+//     }
+//   );
+// };
 
 exports.addOrderToUserHistory = (req, res, next) => {
   let history = [];
@@ -85,4 +104,16 @@ exports.addOrderToUserHistory = (req, res, next) => {
       next();
     }
   );
+};
+
+exports.purchaseHistory = (req, res) => {
+  Order.find({ user: req.profile._id })
+    .populate("User", "_id name") // add Umaj
+    .sort("-created")
+    .exec((err, orders) => {
+      if (err) {
+        return res.status(400).json({ error: errorHandler(err) });
+      }
+      res.json(orders);
+    });
 };
