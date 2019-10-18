@@ -62,6 +62,6 @@ app.use("/api", orderRoutes);
 
 const port = process.env.PORT || 8000;
 
-app.listen(port, () => {
+app.listen(port, "127.0.0.1", () => {
   console.log(`server is running on port ${port}`);
 });
