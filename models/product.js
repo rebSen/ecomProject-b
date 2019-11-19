@@ -9,6 +9,11 @@ const productSchema = new mongoose.Schema(
       required: true,
       maxlength: 32
     },
+    subtitle: {
+      type: String,
+      required: true,
+      maxlength: 2000
+    },
     description: {
       type: String,
       required: true,
