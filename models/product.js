@@ -19,6 +19,11 @@ const productSchema = new mongoose.Schema(
       required: true,
       maxlength: 2000
     },
+    vimeo: {
+      type: String,
+      required: false,
+      maxlength: 200
+    },
     price: {
       type: Number,
       trim: true,
